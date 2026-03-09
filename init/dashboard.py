@@ -162,6 +162,8 @@ class Ui_Dialog(object):
         self.textBrowser_3.setFont(font)
         self.textBrowser_3.setStyleSheet("QTextBrowser{white-space; word-wrap: break-word;white-space: pre-wrap;}")
         self.textBrowser_3.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.textBrowser_3.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.textBrowser_3.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.textBrowser_3.setObjectName("textBrowser_3")
 
         self.retranslateUi(Dialog)

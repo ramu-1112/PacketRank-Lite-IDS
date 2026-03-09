@@ -1,18 +1,21 @@
-from scapy.all import IP,TCP,sniff
-import sqlite3
-from detect import filter
-import time
+from detect import *
+from collections import defaultdict
 
-def packet_handle(pkt):
-    length = len(pkt)
-    src = dst = proto =""
-    if pkt.haslayer(IP):
-        src = pkt[IP].src
-        dst = pkt[IP].dst
-        proto = str(pkt[IP].proto)
-    print(src,dst)
-idx = 0
-capture = sniff(prn=packet_handle,store=False,count=5)
+pkt_filter = Packet_filter()
 
-
-
+class SniffPacket:
+    def __init__(self):
+        self.packet_list = {}
+        self.packet_scoring = {}
+        self.packet_ports = defaultdict(list)
+    
+    def capture_packets(self,times):
+        capture = sniff(prn = lambda pkt: pkt_filter.filtering_packets_attr(pkt,self.packet_list,self.packet_scoring,self.packet_ports),count = times,store=0)
+        return
+    def show_packet(self):
+        for key,value in self.packet_list.items(): print(key,value)
+        return 
+    
+sni = SniffPacket()
+sni.capture_packets(5)
+sni.show_packet()

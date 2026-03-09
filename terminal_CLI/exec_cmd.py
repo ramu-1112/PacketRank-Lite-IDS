@@ -15,7 +15,7 @@ class CommandTable:
                 if subprocess.run(command.split()).returncode == 0: return self.table[typ](text)
         elif typ in self.table_ownCLI:
             return self.table_ownCLI[typ]()
-        else: return "error", "Command is not exists, Please look command again!"
+        else: return "error", "Command does not exists, Please look up command again!"
 
     def showrule_cmdCLI(self):
         rule_ls = ""
