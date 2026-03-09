@@ -1,20 +1,25 @@
 from .parser import Parser
 from .check_rule import RuleManagement
+from processing.capture_pac import * 
 import subprocess
 
 rulemanagement = RuleManagement()
 parser = Parser()
+sniff_cmd = SniffPacket()
 
 class CommandTable:
     def __init__(self):
         self.table = {"block":self.block_cmdCLI,"unblock":self.unblock_cmdCLI,"open":""}
         self.table_ownCLI = {"help":self.help_cmdCLI,"showrule":self.showrule_cmdCLI}
-    def exec_command(self,text):
+        self.table_threadCLI = {"start":self.start_sniff_cmdCLI,"stop":self.stop_sniff_cmdCLI}
+    def exec_command(self,text,func):
         typ,command = parser.command_parser(text)
         if typ in self.table and command is not None:
                 if subprocess.run(command.split()).returncode == 0: return self.table[typ](text)
         elif typ in self.table_ownCLI:
             return self.table_ownCLI[typ]()
+        elif typ in self.table_threadCLI:
+            return self.table_threadCLI[typ](func)
         else: return "error", "Command does not exists, Please look up command again!"
 
     def showrule_cmdCLI(self):
@@ -36,4 +41,14 @@ class CommandTable:
     def unblock_cmdCLI(self,text):
         idx = rulemanagement.check_rule_in_dict(text)
         return rulemanagement.erase_rule(idx)
-        
+    
+    def start_sniff_cmdCLI(self,func):
+        try: sniff_cmd.packet_captured_signal.disconnect() 
+        except: pass
+        sniff_cmd.packet_captured_signal.connect(func)
+        sniff_cmd.start()
+        return "sucess","Capturing...."
+    
+    def stop_sniff_cmdCLI(self,func):
+        sniff_cmd.stop()
+        return "success","Done"

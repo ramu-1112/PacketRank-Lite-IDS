@@ -1,7 +1,7 @@
 from init.dashboard import Ui_Dialog
 from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5 import QtCore
-from terminal_CLI.exec_cmd import CommandTable
+from terminal_CLI.exec_cmd import *
 import sys
 from datetime import datetime
 
@@ -35,7 +35,7 @@ class Dashboard(QDialog):
             if event.type() == QtCore.QEvent.KeyPress:
                 if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
                     self.cmd = self.get_data()
-                    level,msg = self.run_cmd()
+                    level,msg = commandtable.exec_command(self.cmd,self.update_gui)
                     self.ui.textBrowser_3.append(log_to_browser(level,msg))
                     self.show_text()
                     return True
@@ -46,6 +46,25 @@ class Dashboard(QDialog):
                     self.show_text()
                     return False
         return super().eventFilter(obj, event)
+    
+    def update_gui(self, ip):
+        rows = self.ui.tableWidget.rowCount()
+        found_row = -1
+        for r in range(rows):
+            item = self.ui.tableWidget.item(r, 2)
+            if item is not None and item.text() == ip:
+                found_row = r
+                break
+
+        if found_row == -1:
+            self.ui.tableWidget.insertRow(rows)
+            found_row = rows
+            self.ui.tableWidget.setItem(found_row, 2, QTableWidgetItem(ip))
+
+        packet_ip = sniff_cmd.packet_list[ip]
+        self.ui.tableWidget.setItem(found_row, 3, QTableWidgetItem(str(packet_ip.dst)))
+        self.ui.tableWidget.setItem(found_row, 4, QTableWidgetItem(str(packet_ip.dport)))
+        self.ui.tableWidget.setItem(found_row,5,QTableWidgetItem(str(packet_ip.proto)))
 
     def get_data(self):
         cur = self.ui.plainTextEdit.textCursor()
@@ -54,6 +73,3 @@ class Dashboard(QDialog):
     
     def show_text(self):
         self.ui.plainTextEdit.appendPlainText(">$ ")
-
-    def run_cmd(self):
-        return commandtable.exec_command(self.cmd)

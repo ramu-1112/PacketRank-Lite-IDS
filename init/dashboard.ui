@@ -75,6 +75,14 @@
      <height>461</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Noto Sans</family>
+     <pointsize>11</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
    <property name="tabletTracking">
     <bool>false</bool>
    </property>
@@ -96,6 +104,9 @@ QHeaderView::section {
    </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
    </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -131,10 +142,11 @@ QHeaderView::section {
    </column>
    <column>
     <property name="text">
-     <string>Time</string>
+     <string>Score</string>
     </property>
     <property name="font">
      <font>
+      <family>Noto Sans</family>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -164,6 +176,17 @@ QHeaderView::section {
    </column>
    <column>
     <property name="text">
+     <string>Destination port</string>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+   </column>
+   <column>
+    <property name="text">
      <string>Protocol</string>
     </property>
     <property name="font">
@@ -175,21 +198,11 @@ QHeaderView::section {
    </column>
    <column>
     <property name="text">
-     <string>Length</string>
+     <string>Packet size mean </string>
     </property>
     <property name="font">
      <font>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-   </column>
-   <column>
-    <property name="text">
-     <string>Info</string>
-    </property>
-    <property name="font">
-     <font>
+      <family>Noto Sans</family>
       <weight>75</weight>
       <bold>true</bold>
      </font>

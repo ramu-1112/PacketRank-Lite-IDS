@@ -15,7 +15,7 @@ class Packet_info:
         self.dport = dport
 
 class Packet_filter:
-    def filtering_packets_attr(self,pkt,pkt_ls,scoring_ls,port_ls):
+    def _filtering_packets_attr(self,pkt,pkt_ls,scoring_ls,port_ls):
         src = dst = ""
         size = proto = dport = syn = ack =0
         if IP in pkt:
@@ -25,12 +25,12 @@ class Packet_filter:
             size = pkt[IP].len - pkt[IP].ihl*4
         if pkt.haslayer(TCP):
             dport = pkt[TCP].dport
-            syn = (pkt[TCP].flags & 0x02)
-            ack = (pkt[TCP].flags & 0x10)
+            syn = 1 if (pkt[TCP].flags & 'S') else 0
+            ack = 1 if (pkt[TCP].flags & 'A') else 0
 
         info = Packet_info(src,dst,proto,dport)
         arg = Scoring_packet_arg(size,syn,ack)
-        self.insert_pkt(pkt_ls,scoring_ls,port_ls,info,arg)
+        return self.insert_pkt(pkt_ls,scoring_ls,port_ls,info,arg)
 
     def insert_pkt(self,pkt_ls,scoring_ls,port_ls,info,arg):
         if info.src not in pkt_ls:
@@ -43,4 +43,4 @@ class Packet_filter:
             if info.dport not in port_ls[info.src]:
                 port_ls[info.src].append(info.dport)
                 scoring_ls[info.src].total_ports += 1
-        return
+        return info.src        

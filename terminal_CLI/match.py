@@ -3,7 +3,7 @@ import re
 class PreProcessing:
     def __init__(self):
         self.func = ["open","block","unblock"]
-        self.own_func = ["help","showrule"]
+        self.own_func = ["help","showrule","start","stop"]
 
     def checkIP(self,text):
         rule_IP = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
