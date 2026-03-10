@@ -5,7 +5,7 @@ import subprocess
 
 rulemanagement = RuleManagement()
 parser = Parser()
-sniff_cmd = SniffPacket()
+sniff_cmd = None
 
 class CommandTable:
     def __init__(self):
@@ -43,12 +43,15 @@ class CommandTable:
         return rulemanagement.erase_rule(idx)
     
     def start_sniff_cmdCLI(self,func):
-        try: sniff_cmd.packet_captured_signal.disconnect() 
-        except: pass
+        global sniff_cmd
+        sniff_cmd = SniffPacket()
         sniff_cmd.packet_captured_signal.connect(func)
         sniff_cmd.start()
-        return "sucess","Capturing...."
+        return "success","Capturing...."
     
     def stop_sniff_cmdCLI(self,func):
-        sniff_cmd.stop()
+        global sniff_cmd
+        if sniff_cmd is not None:
+            sniff_cmd.stop()
+            sniff_cmd = None
         return "success","Done"

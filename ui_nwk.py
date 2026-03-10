@@ -1,6 +1,6 @@
 from init.dashboard import Ui_Dialog
 from PyQt5.QtWidgets import QApplication, QDialog
-from PyQt5 import QtCore
+from PyQt5 import QtCore,QtWidgets
 from terminal_CLI.exec_cmd import *
 import sys
 from datetime import datetime
@@ -29,7 +29,8 @@ class Dashboard(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.ui.plainTextEdit.installEventFilter(self)
-
+        self.ui.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.ui.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
     def eventFilter(self, obj, event):
         if obj is self.ui.plainTextEdit:
             if event.type() == QtCore.QEvent.KeyPress:
@@ -47,24 +48,22 @@ class Dashboard(QDialog):
                     return False
         return super().eventFilter(obj, event)
     
-    def update_gui(self, ip):
+    def update_gui(self, info):
         rows = self.ui.tableWidget.rowCount()
         found_row = -1
         for r in range(rows):
-            item = self.ui.tableWidget.item(r, 2)
-            if item is not None and item.text() == ip:
+            item = self.ui.tableWidget.item(r, 1)
+            if item is not None and item.text() == info["src"]:
                 found_row = r
                 break
 
         if found_row == -1:
             self.ui.tableWidget.insertRow(rows)
             found_row = rows
-            self.ui.tableWidget.setItem(found_row, 2, QTableWidgetItem(ip))
-
-        packet_ip = sniff_cmd.packet_list[ip]
-        self.ui.tableWidget.setItem(found_row, 3, QTableWidgetItem(str(packet_ip.dst)))
-        self.ui.tableWidget.setItem(found_row, 4, QTableWidgetItem(str(packet_ip.dport)))
-        self.ui.tableWidget.setItem(found_row,5,QTableWidgetItem(str(packet_ip.proto)))
+            self.ui.tableWidget.setItem(found_row, 1, QTableWidgetItem(str(info["src"])))
+            self.ui.tableWidget.setItem(found_row, 2, QTableWidgetItem(str(info["dst"])))
+            self.ui.tableWidget.setItem(found_row, 3, QTableWidgetItem(str(info["dport"])))
+            self.ui.tableWidget.setItem(found_row,4,QTableWidgetItem(str(info["protocol"])))
 
     def get_data(self):
         cur = self.ui.plainTextEdit.textCursor()
