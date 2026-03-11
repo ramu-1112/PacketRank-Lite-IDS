@@ -36,8 +36,8 @@ class Dashboard(QDialog):
             if event.type() == QtCore.QEvent.KeyPress:
                 if event.key() in (QtCore.Qt.Key_Return, QtCore.Qt.Key_Enter):
                     self.cmd = self.get_data()
-                    level,msg = commandtable.exec_command(self.cmd,self.update_gui)
-                    self.ui.textBrowser_3.append(log_to_browser(level,msg))
+                    level,msg = commandtable.exec_command(self.cmd.strip(),self.update_gui)
+                    if level is not None or msg is not None: self.ui.textBrowser_3.append(log_to_browser(level,msg))
                     self.show_text()
                     return True
                 elif event.key() == QtCore.Qt.Key_Up:
@@ -61,9 +61,9 @@ class Dashboard(QDialog):
             self.ui.tableWidget.insertRow(rows)
             found_row = rows
             self.ui.tableWidget.setItem(found_row, 1, QTableWidgetItem(str(info["src"])))
-            self.ui.tableWidget.setItem(found_row, 2, QTableWidgetItem(str(info["dst"])))
-            self.ui.tableWidget.setItem(found_row, 3, QTableWidgetItem(str(info["dport"])))
-            self.ui.tableWidget.setItem(found_row,4,QTableWidgetItem(str(info["protocol"])))
+        self.ui.tableWidget.setItem(found_row, 2, QTableWidgetItem(str(info["dst"])))
+        self.ui.tableWidget.setItem(found_row, 3, QTableWidgetItem(str(info["dport"])))
+        self.ui.tableWidget.setItem(found_row,4,QTableWidgetItem(str(info["protocol"])))
 
     def get_data(self):
         cur = self.ui.plainTextEdit.textCursor()

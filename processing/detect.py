@@ -40,7 +40,7 @@ class Packet_filter:
             
         info = Packet_info(src,dst,proto,dport)
         arg = Scoring_packet_arg(size,syn,ack)
-        return self.insert_pkt(pkt_ls,scoring_ls,port_ls,info,arg)
+        return proto,self.insert_pkt(pkt_ls,scoring_ls,port_ls,info,arg)
 
     def insert_pkt(self,pkt_ls,scoring_ls,port_ls,info,arg):
         if info.src not in pkt_ls:

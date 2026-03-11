@@ -2,8 +2,8 @@ import re, ipaddress
 
 class PreProcessing:
     def __init__(self):
-        self.func = ["open","block","unblock"]
-        self.own_func = ["help","showrule","start","stop"]
+        self.func = ["open","blockv4","unblockv4","blockv6","unblockv6"]
+        self.own_func = ["help","showrulev4","showrulev6","start","stop"]
 
     def checkIPv4(self,text):
         rule_IPv4 = r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"
@@ -16,7 +16,7 @@ class PreProcessing:
         if match: return text[match.start():match.end()]
     
     def checkIPv6(self, text):
-        rule_IPv6 = r"\b([0-9a-fA-F]{1,4}:){5,7}[0-9a-fA-F]{4}\b"
+        rule_IPv6 = r"\b([0-9a-fA-F]{0,4}:){4,7}([0-9a-fA-F]{0,4})"
         match = re.search(rule_IPv6,text)
         if match: return text[match.start():match.end()]
 
@@ -27,7 +27,7 @@ class PreProcessing:
             print("NO command invalid from match")
             pass
         if typ in self.func:
-            if self.checkIP(text): return typ,self.checkIPv4(text)
+            if self.checkIPv4(text): return typ,self.checkIPv4(text)
             if self.checkPort(text): return typ,self.checkPort(text)
             if self.checkIPv6(text): return typ,self.checkIPv6(text)
             return None, None

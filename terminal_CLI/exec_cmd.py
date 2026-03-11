@@ -9,8 +9,8 @@ sniff_cmd = None
 
 class CommandTable:
     def __init__(self):
-        self.table = {"block":self.block_cmdCLI,"unblock":self.unblock_cmdCLI,"open":""}
-        self.table_ownCLI = {"help":self.help_cmdCLI,"showrule":self.showrule_cmdCLI}
+        self.table = {"blockv4":self.blockv4_cmdCLI,"unblockv4":self.unblockv4_cmdCLI,"blockv6":self.blockv6_cmdCLI,"unblockv6":self.unblockv6_cmdCLI,"open":""}
+        self.table_ownCLI = {"help":self.help_cmdCLI,"showrulev4":self.showrulev4_cmdCLI,"showrulev6":self.showrulev6_cmdCLI}
         self.table_threadCLI = {"start":self.start_sniff_cmdCLI,"stop":self.stop_sniff_cmdCLI}
     def exec_command(self,text,func):
         typ,command = parser.command_parser(text)
@@ -22,9 +22,14 @@ class CommandTable:
             return self.table_threadCLI[typ](func)
         else: return "error", "Command does not exists, Please look up command again!"
 
-    def showrule_cmdCLI(self):
+    def showrulev4_cmdCLI(self):
         rule_ls = ""
-        for key,value in rulemanagement.rule_dict.items():
+        for key,value in rulemanagement.rule_dictv4.items():
+            rule_ls += f"[{key}] {value} <br>"
+        return "info", rule_ls
+    def showrulev6_cmdCLI(self):
+        rule_ls = ""
+        for key,value in rulemanagement.rule_dictv6.items():
             rule_ls += f"[{key}] {value} <br>"
         return "info", rule_ls
         
@@ -35,12 +40,19 @@ class CommandTable:
         [+]Block from IP,port: block s [IP] / p [packet_name] [port] <br>"""
         return "info",text
 
-    def block_cmdCLI(self,text):
-        return rulemanagement.insert_rule(text)
+    def blockv4_cmdCLI(self,text):
+        return rulemanagement.insert_rulev4(text)
     
-    def unblock_cmdCLI(self,text):
-        idx = rulemanagement.check_rule_in_dict(text)
-        return rulemanagement.erase_rule(idx)
+    def unblockv4_cmdCLI(self,text):
+        idx = rulemanagement.check_rule_in_dictv6(text)
+        return rulemanagement.erase_rulev4(idx)
+    
+    def blockv6_cmdCLI(self,text):
+        return rulemanagement.insert_rulev6(text)
+    
+    def unblockv6_cmdCLI(self,text):
+        idx = rulemanagement.check_rule_in_dictv6(text)
+        return rulemanagement.erase_rulev6(idx)
     
     def start_sniff_cmdCLI(self,func):
         global sniff_cmd

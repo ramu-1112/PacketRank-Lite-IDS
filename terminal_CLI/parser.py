@@ -5,9 +5,9 @@ preprocessing = PreProcessing()
 class Parser:
     def __init__(self):
         self.mapping = {"s":"-s","p":"-p","port":"--dport"}
-        self.command_CLI_head = {"open":"ncat -l ","block":"/sbin/iptables -A INPUT ","unblock":"/sbin/iptables -D INPUT "}
-        self.command_CLI_tail = {"block":"-j DROP","unblock":""}
-        self.command_own = {"help":"","showrule":"","start":"","stop":""}
+        self.command_CLI_head = {"open":"ncat -l ","blockv4":"/sbin/iptables -A INPUT ","unblockv4":"/sbin/iptables -D INPUT ","blockv6":"/sbin/ip6tables -A INPUT ","unblockv6":"/sbin/ip6tables -D INPUT "}
+        self.command_CLI_tail = {"blockv4":"-j DROP","unblockv4":"","blockv6":"-j DROP","unblockv6":""}
+        self.command_own = {"help":"","showrulev4":"","showrulev6":"","start":"","stop":""}
 
     def command_parser(self,text):
         arr = text.split()[1:]
