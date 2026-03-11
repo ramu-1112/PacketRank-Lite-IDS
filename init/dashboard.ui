@@ -267,7 +267,9 @@ QHeaderView::section {
    <property name="font">
     <font>
      <family>Noto Sans</family>
-     <pointsize>10</pointsize>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="styleSheet">

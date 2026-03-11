@@ -2,11 +2,11 @@ from init.dashboard import Ui_Dialog
 from PyQt5.QtWidgets import QApplication, QDialog
 from PyQt5 import QtCore,QtWidgets
 from terminal_CLI.exec_cmd import *
+from processing.packet_find import Packet_query
 import sys
 from datetime import datetime
 
 commandtable = CommandTable()
-
 
 def log_to_browser(level, message):
     now = datetime.now().strftime("%H:%M:%S")
@@ -29,8 +29,10 @@ class Dashboard(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.ui.plainTextEdit.installEventFilter(self)
+        self.ui.tableWidget.itemClicked.connect(self.get_row_data)
         self.ui.tableWidget.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.ui.tableWidget.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+
     def eventFilter(self, obj, event):
         if obj is self.ui.plainTextEdit:
             if event.type() == QtCore.QEvent.KeyPress:
@@ -60,10 +62,18 @@ class Dashboard(QDialog):
         if found_row == -1:
             self.ui.tableWidget.insertRow(rows)
             found_row = rows
-            self.ui.tableWidget.setItem(found_row, 1, QTableWidgetItem(str(info["src"])))
-        self.ui.tableWidget.setItem(found_row, 2, QTableWidgetItem(str(info["dst"])))
-        self.ui.tableWidget.setItem(found_row, 3, QTableWidgetItem(str(info["dport"])))
+            self.ui.tableWidget.setItem(found_row,1,QTableWidgetItem(str(info["src"])))
+        self.ui.tableWidget.setItem(found_row,2,QTableWidgetItem(str(info["dst"])))
+        self.ui.tableWidget.setItem(found_row,3,QTableWidgetItem(str(info["dport"])))
         self.ui.tableWidget.setItem(found_row,4,QTableWidgetItem(str(info["protocol"])))
+
+    def get_row_data(self,item):
+        query = Packet_query()
+        row = item.row()
+        src_ip = self.ui.tableWidget.item(row, 1).text()
+        protocol_ip = self.ui.tableWidget.item(row,4).text()
+        if protocol_ip != "TCP" and protocol_ip != "UDP": protocol_ip = "default"
+        self.ui.textBrowser_2.setPlainText(query.search_packet(src_ip,protocol_ip))
 
     def get_data(self):
         cur = self.ui.plainTextEdit.textCursor()
